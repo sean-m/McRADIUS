@@ -16,7 +16,17 @@ namespace McRADIUS.PacketHandlers
 
         IRadiusPacket IPacketHandler.HandlePacket(IRadiusPacket packet)
         {
-            throw new NotImplementedException();
+            switch (packet.Code)
+            {
+                case PacketCode.AccessRequest:
+                    // TODO request and respond with Access-Accept
+                    var username = packet.Attributes["User-Name"].ToString() ?? "NO NAME";
+                    Console.WriteLine($"{DateTime.Now.ToString("o")} : Access-Request for {username}");
+                    var response = packet.CreateResponsePacket(PacketCode.AccessAccept);
+                    return response;
+                default:
+                    throw new NotImplementedException($"Nothing implemented for code type: {packet.Code}");
+            }
         }
     }
 }
