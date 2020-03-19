@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Views\OTPRequest\" />
+    <Folder Include="PacketHandlers\" />
   </ItemGroup>
 
 

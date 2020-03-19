@@ -10,8 +10,14 @@ namespace McRADIUS_Server
             var config = new McRADIUS.ServerConfiguration();
 
             var server = new McRADIUS.Server();
-            server.Init(config);
+            server.Init(config, args);
             server.Run();
+
+            Console.WriteLine("Press enter to stop service.");
+
+            Console.ReadLine();
+
+            server.Stop();
         }
     }
 }
