@@ -15,16 +15,21 @@ namespace McRADIUS
 {
     public class Server
     {
+        #region fields
+
         private ServerConfiguration config;
         private bool running = false;
         private string[] args;
         private Task aspNetServer;
         private CancellationTokenSource cancelSource = new CancellationTokenSource();
-        private IPacketHandler handler;
         private RadiusServer authenticationServer;
         private RadiusServer accountingServer;
-
         private ILogger serverLogger;
+
+        #endregion  // fields
+
+
+        #region constructor
 
         public Server()
         {
@@ -54,6 +59,11 @@ namespace McRADIUS
             serverLogger = loggerFactory.CreateLogger<Server>();
         }
 
+        #endregion  // constructor
+
+
+        #region methods
+
         public void Run()
         {
             Console.WriteLine("Hello world!");
@@ -70,10 +80,15 @@ namespace McRADIUS
                 var udpClientFactory = new UdpClientFactory();
                 repository.AddPacketHandler(IPAddress.Any, packetHandler, config.SharedSecret);
 
-                
+                // Listen address
+                // TODO test IPv6
+                var listenAddress = String.Equals(config.IPAddress, "0.0.0.0") ?
+                    IPAddress.Any :
+                    IPAddress.Parse(config.IPAddress);
+
                 authenticationServer = new RadiusServer(
                     udpClientFactory,
-                    new IPEndPoint(IPAddress.Any, 1812),
+                    new IPEndPoint(listenAddress, 1812),
                     radiusPacketParser,
                     RadiusServerType.Authentication,
                     repository,
@@ -128,4 +143,6 @@ namespace McRADIUS
                     webBuilder.UseStartup<Startup>();
                 });
     }
+
+    #endregion  // methods
 }
